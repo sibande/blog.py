@@ -2,7 +2,7 @@
 
 **blog.py** is a Python blog that runs on Google App Engine
 
-##Requirements and Installation
+##Requirements and Setup
 
 You will need to extract the following packages under lib/
 
