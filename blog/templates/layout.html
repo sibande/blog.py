@@ -1,0 +1,53 @@
+<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Sibande</title>
+    <link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print" />
+    <!--[if lt IE 8]>
+	<link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection" />
+    <![endif]-->
+    <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="/static/css/highlight.css" type="text/css" />
+  </head>
+  <body>
+    {% macro with_errors(field) %}
+      <div class="form_field">
+	{% if field.errors %}
+          {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
+	  {{ field(class=css_class, **kwargs) }}
+	  <ul class="errors">{% for error in errors %}<li>{{ error|e }}</li>{% endfor %}</ul>
+	{% else %}
+          {{ field(**kwargs) }}
+	{% endif %}
+      </div>
+    {% endmacro %}
+
+    <div class="contentCover">
+      <div class="blogTitle">
+	<div class="top-feed-icon">
+	  <a href="/blog/rootblog/feeds/posts/"> </a>
+	</div>
+	<a href="/">Sibande_</a>
+      </div>
+      <ul class="menu">
+	<li><a href="/">Home</a></li> <li><a href="/projects">Projects</a></li>
+	<li><a href="/about">About</a></li> <li><a href="/contact">Contact</a></li>
+	<li class="accounts">
+	  {% if google_accounts.get_current_user() %}
+	    <a href="{{ google_accounts.create_logout_url('/') }}">Logout</a> ({{ google_accounts.get_current_user().nickname() }})
+	  {% else %}
+	    <a href="{{ google_accounts.create_login_url('/') }}">Login</a>
+	  {% endif %}
+	</li>
+      </ul>
+      <div class="content">
+	{% block content %}{% endblock %}
+      </div>
+    </div>
+
+  </body>
+</html>

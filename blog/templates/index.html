@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+  
+  {% if google_accounts.is_current_user_admin() %}
+    <a href="/post/add">+ Add Post</a><br />
+  {% endif %}
+  
+  {% for post in posts %}
+    <h2><a href="/post/{{ post.slug }}-{{ post.key().id() }}">{{ post.title }}</a></h2>
+    <div class="body">
+      {{ post.body|markdown }}
+    </div>
+    {{ post.datetime }}<br />
+    <hr />
+  {% endfor %}
+{% endblock %}

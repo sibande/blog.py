@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h2><a href="/post/{{ post.slug }}-{{ post.key().id() }}">{{ post.title }}</a></h2>
+  <div class="body">
+    {{ post.body|markdown }}
+  </div>
+  {% if google_accounts.is_current_user_admin() %}
+    <div style="float:right;"><a href="/post/{{ post.slug }}-{{ post.key().id() }}/edit">Edit</a></div>
+  {% endif %}
+  {{ post.datetime }}
+  <hr />
+  <h3>Comments</h3>
+  {% for comment in comments %}
+    {{ comment.body|markdown('safe') }}
+    {% autoescape true %}
+    By <strong>{% if comment.url %}
+      <a href="{{ comment.url }}">{{ comment.name }}</a> 
+    {% else %}
+      {{ comment.name}}
+    {% endif %}
+    </strong>
+    {% endautoescape %}
+    on {{ comment.datetime }}
+    <hr />
+  {% endfor %}
+  
+  <form action="/post/{{ post.slug }}-{{ post.key().id() }}" method="post">
+    {{ form.name.description }}<br />
+    {{ form.name.render() }}<br />
+    {{ form.url.description }}<br />
+    {{ form.url.render() }}<br />
+    {{ form.email.description }}<br />
+    {{ form.email.render() }}<br />
+    {{ form.body.description }}<br />
+    {{ form.body.render() }}<br />
+    {{ form.Comment.render() }}
+  </form>
+ 
+{% endblock %}

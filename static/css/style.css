@@ -1,0 +1,82 @@
+body {
+    font-family: Verdana,sans-serif;
+    background-color: #fff;
+    margin: 0 auto;
+    width: 800px;
+}
+
+.contentCover {
+    padding: 15px;
+
+
+}
+.menu {
+    padding: 0 10px;
+    margin: 0 0 10px 0;
+    position: relative;
+    background-color: #fff;
+}
+.menu li {
+    display: inline;
+}
+.menu li a {
+    color: black;
+    text-decoration: none;
+}
+.menu li.accounts {
+    font-size: 10px;
+    position: absolute;
+    top: 0;
+    right: 10px;
+}
+.content {
+    padding: 0 10px;
+    background-color: #fff;
+}
+a {text-decoration: none;}
+a:hover {text-decoration: underline;}
+.blogTitle {
+    padding: 0 10px;
+    height: 70px;
+    font-size:35px;
+}
+.blogTitle a {
+    color: #000;
+}
+/* stolen from WillMcGugan's blog*/
+.top-feed-icon {
+    background-image:url(/static/images/icons/feed.png);
+    background-position:right top;
+    background-repeat:no-repeat;
+    float:right;
+    height:64px;
+    margin:0 auto;
+    opacity:0.2;
+    width:64px;
+    z-index:2;
+}
+.top-feed-icon:hover {
+    opacity:1;
+}
+.top-feed-icon a {
+    display:block;
+    height:64px;
+    width:64px;
+}
+pre {
+    background:#F9F9F9 none repeat scroll 0 0;
+    clear:both;
+    font-family:"Bitstream Vera Sans Mono","Courier new","Courier",monospace;
+    font-size:12px;
+    line-height:120%;
+    margin-bottom:16px;
+    margin-top:0;
+    max-height:600px;
+    overflow-x:auto;
+    padding:8px;
+}
+/*Custom form.css*/
+input.text, input.title {width:60%;padding:5px;}
+input.title {font-size:1.5em;}
+textarea {width:90%;height:250px;padding:5px;}
+textarea.post {height:500px;}
