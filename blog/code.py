@@ -5,7 +5,6 @@ ROOT_PATH = os.path.dirname(__file__)
 sys.path = [ROOT_PATH, '%s/lib' % os.path.dirname(ROOT_PATH),] + sys.path
 
 import web
-import urls
 from web import form
 
 from google.appengine.api import users
