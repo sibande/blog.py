@@ -10,7 +10,6 @@ from web import form
 from google.appengine.api import users
 
 from utils.template import render_template
-from utils.sessionLib import ManageClientSession
 from utils.decorators import admin_perm_required
 
 from models import Post, Comment
@@ -143,7 +142,9 @@ mapper = ('/', 'index',
           '/post/.*-(\d+)/(edit)', 'add_edit',)
     
 def session_loadhook():
-    web.user = ManageClientSession(web)
+    from utils.trackRequest import TrackRequest
+    
+    TrackRequest(web)
     web.google_accounts = users
     context['google_accounts'] = users
 
