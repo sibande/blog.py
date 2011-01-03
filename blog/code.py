@@ -12,7 +12,7 @@ from google.appengine.api import users
 from utils.template import render_template
 from utils.decorators import admin_perm_required
 
-from models import Post, Comment
+from models import Post, Comment, Static
 
 
 context = dict()
@@ -50,8 +50,8 @@ comment_form = form.Form(
 
 class index:
     def GET(self):
-        posts = Post.all().filter('active =', True).order('-datetime')
-        context['posts'] = posts
+        context['posts'] = Post.all().filter('active =', True).order('-datetime')
+
         return render_template('index.html', **context)
     def POST(self):
         return web.seeother('/')
@@ -73,7 +73,7 @@ class add_edit:
         if action == 'edit':
             self.form.get('title').value = self.post.title
             self.form.get('body').value = self.post.body
-            self.form.get('active').value = self.post.active            
+            self.form.get('active').value = self.post.active
     @admin_perm_required
     def GET(self, post_id=None, action='add'):
         self.init_data(post_id, action)
@@ -117,7 +117,6 @@ class view:
         context['post'] = self.post
     def GET(self, slug, post_id):
         self.init_data(slug, post_id)
-        
         context['form'] = self.form_class()
         return render_template('view.html', **context)
     def POST(self, slug, post_id):
@@ -132,24 +131,42 @@ class view:
                                    active=True,)
             comment_data.put()
             return web.seeother('/post/'+self.post.slug+'-'+str(self.post.key().id()), absolute=True)
+
+        return form.get('body').value;
         context['form'] = form
         return render_template('view.html', **context)
+
+class static_content:
+    def GET(self, name):
+        content = Static.all().filter('name =', name).get()
+        if not content:
+            raise web.notfound()
+        context['content'] = content
+        return render_template('static_content.html', **context)
+    def POST(self, name):
+        return web.seeother('/')
+
+        
 
 #urls
 mapper = ('/', 'index',
           '/post/add', 'add_edit',
           '/post/(.*)-(\d+)', 'view',
-          '/post/.*-(\d+)/(edit)', 'add_edit',)
+          '/post/.*-(\d+)/(edit)', 'add_edit',
+          '/(\w+)', 'static_content',)
     
-def session_loadhook():
+def default_loadhook():
     from utils.trackRequest import TrackRequest
     
     TrackRequest(web)
     web.google_accounts = users
     context['google_accounts'] = users
+    
+    context['static_pages'] = Static.all().filter('position <', 15)\
+        .filter('active =', True).order('position')
 
 app = web.application(mapper, globals())
-app.add_processor(web.loadhook(session_loadhook))
+app.add_processor(web.loadhook(default_loadhook))
 
 if __name__ == "__main__":
     main = app.cgirun()

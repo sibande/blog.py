@@ -1,13 +1,17 @@
+# -*- coding: utf-8 -*-
 import datetime
 
 def markdown(content, safe="unsafe"):
     """Format and highlight text"""
     from markdown import markdown
+
     if safe == "unsafe":
         safe = False
     else:
-        safe = True
-    return markdown(content, ['codehilite',], safe,)
+        safe = 'escape'
+    content = markdown(content, ['codehilite',], safe,)
+    return content
+    
 
 
 template_tags = {'markdown': markdown}

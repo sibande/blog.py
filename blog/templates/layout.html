@@ -4,7 +4,8 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <title>Sibande</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>{% block title %}Sibande{% endblock %}</title>
     <link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection" />
     <link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print" />
     <!--[if lt IE 8]>
@@ -34,8 +35,10 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	<a href="/">Sibande_</a>
       </div>
       <ul class="menu">
-	<li><a href="/">Home</a></li> <li><a href="/projects">Projects</a></li>
-	<li><a href="/about">About</a></li> <li><a href="/contact">Contact</a></li>
+	<li><a href="/">Home</a></li>
+	{% for page in static_pages %}
+	  <li><a href="/{{ page.name }}">{{ page.label }}</a></li>
+	{% endfor %}
 	<li class="accounts">
 	  {% if google_accounts.get_current_user() %}
 	    <a href="{{ google_accounts.create_logout_url('/') }}">Logout</a> ({{ google_accounts.get_current_user().nickname() }})

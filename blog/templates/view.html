@@ -9,6 +9,7 @@
   {% endif %}
   {{ post.datetime }}
   <hr />
+
   <h3>Comments</h3>
   {% for comment in comments %}
     {{ comment.body|markdown('safe') }}

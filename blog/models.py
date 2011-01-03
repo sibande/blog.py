@@ -42,5 +42,11 @@ class Comment(db.Model):
     datetime = db.DateTimeProperty(auto_now_add=True)
 
 
-
-        
+class Static(db.Model):
+    position = db.IntegerProperty()
+    name = db.StringProperty(required=True)
+    label = db.StringProperty()
+    title = db.StringProperty()
+    content = db.TextProperty(required=True)
+    active = db.BooleanProperty()
+    datetime = db.DateTimeProperty(auto_now_add=True)

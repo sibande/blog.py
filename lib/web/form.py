@@ -140,7 +140,7 @@ class Input(object):
 class Textbox(Input):
     def render(self, shownote=True):
         x = '<input type="text" name="%s"' % net.websafe(self.name)
-        if self.value: x += ' value="%s"' % net.websafe(self.value)
+        if self.value: x += ' value="%s"' % net.websafe(self.value).decode('utf-8')
         x += self.addatts()
         x += ' />'
         if shownote:
@@ -150,7 +150,7 @@ class Textbox(Input):
 class Password(Input):
     def render(self):
         x = '<input type="password" name="%s"' % net.websafe(self.name)
-        if self.value: x += ' value="%s"' % net.websafe(self.value)
+        if self.value: x += ' value="%s"' % net.websafe(self.value).decode('utf-8')
         x += self.addatts()
         x += ' />'
         x = self.rendernote(self.note) + x
@@ -161,7 +161,7 @@ class Textarea(Input):
         x = '<textarea name="%s"' % net.websafe(self.name)
         x += self.addatts()
         x += '>'
-        if self.value is not None: x += net.websafe(self.value)
+        if self.value is not None: x += net.websafe(self.value).decode('utf-8')
         x += '</textarea>'
         x = self.rendernote(self.note) + x
         return x
@@ -181,7 +181,7 @@ class Dropdown(Input):
 
             if self.value == value: select_p = ' selected="selected"'
             else: select_p = ''
-            x += '  <option %s value="%s">%s</option>\n' % (select_p, net.websafe(value), net.websafe(desc))
+            x += '  <option %s value="%s">%s</option>\n' % (select_p, net.websafe(value).decode('utf-8'), net.websafe(desc))
         x += '</select>\n'
         x = self.rendernote(self.note) + x
         return x
@@ -196,7 +196,7 @@ class Radio(Input):
         for arg in self.args:
             if self.value == arg: select_p = ' checked="checked"'
             else: select_p = ''
-            x += '<input type="radio" name="%s" value="%s"%s%s /> %s ' % (net.websafe(self.name), net.websafe(arg), select_p, self.addatts(), net.websafe(arg))
+            x += '<input type="radio" name="%s" value="%s"%s%s /> %s ' % (net.websafe(self.name), net.websafe(arg).decode('utf-8'), select_p, self.addatts(), net.websafe(arg).decode('utf-8'))
             x += '</span>'
             x = self.rendernote(self.note) + x
         return x
@@ -229,7 +229,7 @@ class Hidden(Input):
 
     def render(self):
         x = '<input type="hidden" name="%s"' % net.websafe(self.name)
-        if self.value: x += ' value="%s"' % net.websafe(self.value)
+        if self.value: x += ' value="%s"' % net.websafe(self.value).decode('utf-8')
         x += self.addatts()
         x += ' />'
         return x
