@@ -48,12 +48,41 @@ comment_form = form.Form(
     form.Button('Comment'),
 )
 
+static_form = form.Form(
+    form.Textbox('position',
+                 form.notnull,
+                 form.regexp('\d+', 'Must be a digit'),
+                 class_='text',
+                 description='Position number'),
+    form.Textbox('name',
+                 form.notnull,
+                 class_='text',
+                 description='Name (absolute page path)'),
+    form.Textbox('label',
+                 form.notnull,
+                 class_='text',
+                 description='Link label'),
+    form.Textbox('title',
+                 class_='text',
+                 description='Full page label'),
+    form.Textarea('content',
+                 form.notnull,
+                 class_='text',
+                 description='Content'),
+    form.Checkbox('active', description='Active'),
+    form.Button('Post'),
+)
+
+
 class index:
     def GET(self):
         context['posts'] = Post.all().filter('active =', True).order('-datetime')
 
         return render_template('index.html', **context)
     def POST(self):
+        page = web.input().get('page')
+        if page:
+            return web.seeother(page, absolute=True)
         return web.seeother('/')
 
 
@@ -81,7 +110,7 @@ class add_edit:
         return render_template('add.html', **context)
     @admin_perm_required
     def POST(self, post_id=None, action='add'):
-        self.init_data(post_id, 'update') #switch to "update" and loose "edit" state
+        self.init_data(post_id, 'update') #switch to "update" and lose "edit" state
         form = self.form_class()
         if form.validates():
             active = True if form.get('active').value else False
@@ -131,32 +160,89 @@ class view:
                                    active=True,)
             comment_data.put()
             return web.seeother('/post/'+self.post.slug+'-'+str(self.post.key().id()), absolute=True)
-
-        return form.get('body').value;
         context['form'] = form
         return render_template('view.html', **context)
 
-class static_content:
-    def GET(self, name):
-        content = Static.all().filter('name =', name).get()
-        if not content:
-            raise web.notfound()
-        context['content'] = content
-        return render_template('static_content.html', **context)
-    def POST(self, name):
-        return web.seeother('/')
+class feed_server:
 
+    def GET(self):
+        posts = Post.all().filter('active =', True).order('-datetime')
+        web.header('Content-type','text/xml')
+        data = '<rss version="2.0">'
+        data += '<channel>'
+        data += '<title>Sibande\'s Thoughts</title>'
+        data += '<link>http://www.sibande.com/</link>'
+        data += '<description>Random thoughs by Sibande_</description>'
+        for post in posts:
+            data += '<item>'
+            data += '<title>'+post.title+'</title>'
+            data += '<link>'+'http://www.sibande.com/post/'+post.slug+'-'+str(post.key().id())+'</link>'
+            data += '<description>'+post.body.split('\n')[0]+'</description>'
+            data += '<pubDate>'+str(post.datetime)+'</pubDate>'
+            data += '</item>'
+        data += '</channel>'
+        data += '</rss>'
+        return data
+    def POST(self):
+        return web.seeother('/', absolute=True)
         
+
+class static_content:
+
+    def init_data(self, name, action):
+        self.content = Static.all().filter('name =', name).get()
+        self.form_class = static_form
+        form = self.form_class()
+        if not self.content or action == 'edit':
+            if not context['google_accounts'].get_current_user():
+                raise web.notfound()
+            context['form'] = form()
+            context['add_or_edit'] = True
+        else:
+            context['add_or_edit'] = False
+            context['content'] = self.content
+        context['page_path'] = '/'+name
+        if action == 'edit':
+            form = form()
+            form.get('position').value = self.content.position
+            form.get('name').value = self.content.name
+            form.get('label').value = self.content.label
+            form.get('title').value = self.content.title
+            form.get('content').value = self.content.content
+            form.get('active').value=self.content.active
+            context['form'] = form
+
+    def GET(self, name, action='view'):
+        self.init_data(name, action)
+        return render_template('static_content.html', **context)
+    @admin_perm_required
+    def POST(self, name, action='view'):
+        self.init_data(name, action)
+        form = self.form_class()
+        if form.validates():
+            active = True if form.get('active').value else False
+            static_data = Static(position=int(form.get('position').value),
+                                 name=form.get('name').value.lstrip('/'),
+                                 label=form.get('label').value,
+                                 title=form.get('title').value,
+                                 content=form.get('content').value,
+                                 active=active,)
+            static_data.put()
+            return web.seeother('/'+static_data.name, absolute=True)
+        context['form'] = form
+        return render_template('static_content.html', **context)
 
 #urls
 mapper = ('/', 'index',
           '/post/add', 'add_edit',
           '/post/(.*)-(\d+)', 'view',
           '/post/.*-(\d+)/(edit)', 'add_edit',
+          '/blog/feeds', 'feed_server',
+          '/(\w+)/(edit)', 'static_content',
           '/(\w+)', 'static_content',)
     
 def default_loadhook():
-    from utils.trackRequest import TrackRequest
+    from utils.track_request import TrackRequest
     
     TrackRequest(web)
     web.google_accounts = users

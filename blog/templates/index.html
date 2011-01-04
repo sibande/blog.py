@@ -1,10 +1,18 @@
 {% extends "layout.html" %}
 {% block content %}
-  
+
   {% if google_accounts.is_current_user_admin() %}
+    <div style="float:right;">
+      <form action="/" method="post">
+	Create static URL 
+	<input type="text" name="page" />
+	<input type="submit" value="+" />
+      </form>
+    </div>
     <a href="/post/add">+ Add Post</a><br />
   {% endif %}
   
+  <div style="clear:both;"></div>
   {% for post in posts %}
     <h2><a href="/post/{{ post.slug }}-{{ post.key().id() }}">{{ post.title }}</a></h2>
     <div class="body">
