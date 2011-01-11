@@ -221,16 +221,31 @@ class static_content:
         form = self.form_class()
         if form.validates():
             active = True if form.get('active').value else False
-            static_data = Static(position=int(form.get('position').value),
-                                 name=form.get('name').value.lstrip('/'),
-                                 label=form.get('label').value,
-                                 title=form.get('title').value,
-                                 content=form.get('content').value,
-                                 active=active,)
+            if not self.content:
+                static_data = Static(position=int(form.get('position').value),
+                                     name=form.get('name').value.lstrip('/'),
+                                     label=form.get('label').value,
+                                     title=form.get('title').value,
+                                     content=form.get('content').value,
+                                     active=active,)
+            else:
+                self.content.position=int(form.get('position').value)
+                self.content.name=form.get('name').value.lstrip('/')
+                self.content.label=form.get('label').value
+                self.content.title=form.get('title').value
+                self.content.content=form.get('content').value
+                self.content.active=active
+                static_data = self.content
             static_data.put()
             return web.seeother('/'+static_data.name, absolute=True)
         context['form'] = form
         return render_template('static_content.html', **context)
+
+def notfound():
+    return web.notfound(render_template('404.html', **context))
+    
+def internalerror():
+    return web.internalerror(render_template('500.html', **context))
 
 #urls
 mapper = ('/', 'index',
@@ -250,8 +265,10 @@ def default_loadhook():
     
     context['static_pages'] = Static.all().filter('position <', 15)\
         .filter('active =', True).order('position')
-
+    #int('tt')
 app = web.application(mapper, globals())
+app.notfound = notfound
+app.internalerror = internalerror
 app.add_processor(web.loadhook(default_loadhook))
 
 if __name__ == "__main__":
