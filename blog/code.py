@@ -12,6 +12,10 @@ from google.appengine.api import users
 from common.utils import render_template, admin_perm_required
 
 from models import Post, Static
+import datetime
+
+
+SITE_URL = 'http://www.sibande.com'
 
 
 context = dict()
@@ -129,26 +133,31 @@ class view:
         self.init_data(slug, post_id)
         return web.seeother('/post/'+self.post.slug+'-'+str(self.post.key().id()), absolute=True)
 
-class feed_server:
-
+class feed:
     def GET(self):
+        import PyRSS2Gen as RSS2
+
         posts = Post.all().filter('active =', True).order('-datetime')
-        web.header('Content-type','text/xml')
-        data = '<rss version="2.0">'
-        data += '<channel>'
-        data += '<title>Sibande\'s Thoughts</title>'
-        data += '<link>http://www.sibande.com/</link>'
-        data += '<description>Random thoughs by Sibande_</description>'
+        items = list()
         for post in posts:
-            data += '<item>'
-            data += '<title>'+post.title+'</title>'
-            data += '<link>'+'http://www.sibande.com/post/'+post.slug+'-'+str(post.key().id())+'</link>'
-            data += '<description>'+post.body.split('\n')[0]+'</description>'
-            data += '<pubDate>'+str(post.datetime)+'</pubDate>'
-            data += '</item>'
-        data += '</channel>'
-        data += '</rss>'
-        return data
+            link = SITE_URL+'/post/'+post.slug+'-'+str(post.key().id())
+            items.append(
+                RSS2.RSSItem(
+                    title = post.title,
+                    link = link,
+                    description = post.body.split('\n')[0],
+                    guid = RSS2.Guid(link),
+                    pubDate = post.datetime))
+            
+            rss = RSS2.RSS2(
+                title = "Sibande's feed",
+                link = SITE_URL,
+                description = "Random thoughs by Sibande_",
+                lastBuildDate = datetime.datetime.now(),
+                
+                items = items)
+
+        return rss.to_xml();
     def POST(self):
         return web.seeother('/', absolute=True)
         
@@ -218,7 +227,7 @@ mapper = ('/', 'index',
           '/post/add', 'add_edit',
           '/post/(.*)-(\d+)', 'view',
           '/post/.*-(\d+)/(edit)', 'add_edit',
-          '/blog/feeds', 'feed_server',
+          '/blog/feeds', 'feed',
           '/(\w+)/(edit)', 'static_content',
           '/(\w+)', 'static_content',)
     
