@@ -23,13 +23,15 @@ def markdown(content, safe="unsafe"):
     
 
 
-template_tags = {'markdown': markdown}
+
 
 def render_template(template_name, **context):
 
     import os
     import datetime
     from jinja2 import Environment,FileSystemLoader
+
+    template_tags = {'markdown': markdown}
 
     extensions = context.pop('extensions', [])
     globals = context.pop('globals', {})

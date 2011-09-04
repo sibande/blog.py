@@ -5,58 +5,17 @@ ROOT_PATH = os.path.dirname(__file__)
 sys.path = [ROOT_PATH, '%s/lib' % os.path.dirname(ROOT_PATH),] + sys.path
 
 import web
-from web import form
+import datetime
 
 from google.appengine.api import users
 
 from common.utils import render_template, admin_perm_required
-
-from models import Post, Static
-import datetime
+from common.models import Post, Static
+from common.forms import post_form, static_form
 
 
 SITE_URL = 'http://www.sibande.com'
-
-
 context = dict()
-
-post_form = form.Form(
-    form.Textbox('title',
-                 form.notnull,
-                 class_='title',
-                 description='Title'), 
-    form.Textarea('body',
-                  form.notnull,
-                  class_="post",
-                  description='Body'),
-    form.Checkbox('active', description='Active'),
-    form.Button('Post'),
-)
-
-static_form = form.Form(
-    form.Textbox('position',
-                 form.notnull,
-                 form.regexp('\d+', 'Must be a digit'),
-                 class_='text',
-                 description='Position number'),
-    form.Textbox('name',
-                 form.notnull,
-                 class_='text',
-                 description='Name (absolute page path)'),
-    form.Textbox('label',
-                 form.notnull,
-                 class_='text',
-                 description='Link label'),
-    form.Textbox('title',
-                 class_='text',
-                 description='Full page label'),
-    form.Textarea('content',
-                 form.notnull,
-                 class_='text',
-                 description='Content'),
-    form.Checkbox('active', description='Active'),
-    form.Button('Post'),
-)
 
 
 class index:
