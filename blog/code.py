@@ -9,10 +9,9 @@ from web import form
 
 from google.appengine.api import users
 
-from utils.template import render_template
-from utils.decorators import admin_perm_required
+from common.utils import render_template, admin_perm_required
 
-from models import Post, Comment, Static
+from models import Post, Static
 
 
 context = dict()
@@ -28,24 +27,6 @@ post_form = form.Form(
                   description='Body'),
     form.Checkbox('active', description='Active'),
     form.Button('Post'),
-)
-
-comment_form = form.Form(
-    form.Textbox('name',
-                 form.notnull,
-                 class_='text',
-                 description='Name'), 
-    form.Textbox('url',
-                 class_='text',
-                 description='Website (optional, eg: http://sibande.com)'), 
-    form.Textbox('email',
-                 form.notnull,
-                 class_='text',
-                 description='E-mail'), 
-    form.Textarea('body',
-                  form.notnull,
-                  description='Body'),
-    form.Button('Comment'),
 )
 
 static_form = form.Form(
@@ -134,34 +115,19 @@ class add_edit:
 
 class view:
 
-    def __init__(self):
-        self.form_class = comment_form
     def init_data(self, slug, post_id):
         try:
             self.post_id = int(post_id)
         except TypeError:
             self.post_id = 0
         self.post = Post.get_by_id(self.post_id)
-        context['comments'] = Comment.all().filter('post =', self.post).order('-datetime')
         context['post'] = self.post
     def GET(self, slug, post_id):
         self.init_data(slug, post_id)
-        context['form'] = self.form_class()
         return render_template('view.html', **context)
     def POST(self, slug, post_id):
         self.init_data(slug, post_id)
-        form = self.form_class()
-        if form.validates():
-            comment_data = Comment(post=self.post,
-                                   name=form.get('name').value,
-                                   url=form.get('url').value,
-                                   email=form.get('email').value,
-                                   body=form.get('body').value,
-                                   active=True,)
-            comment_data.put()
-            return web.seeother('/post/'+self.post.slug+'-'+str(self.post.key().id()), absolute=True)
-        context['form'] = form
-        return render_template('view.html', **context)
+        return web.seeother('/post/'+self.post.slug+'-'+str(self.post.key().id()), absolute=True)
 
 class feed_server:
 
@@ -257,15 +223,12 @@ mapper = ('/', 'index',
           '/(\w+)', 'static_content',)
     
 def default_loadhook():
-    from utils.track_request import TrackRequest
-    
-    TrackRequest(web)
     web.google_accounts = users
     context['google_accounts'] = users
     
     context['static_pages'] = Static.all().filter('position <', 15)\
         .filter('active =', True).order('position')
-    #int('tt')
+
 app = web.application(mapper, globals())
 app.notfound = notfound
 app.internalerror = internalerror
