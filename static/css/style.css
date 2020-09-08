@@ -1,82 +1,102 @@
+@import url("http://fonts.googleapis.com/css?family=Open+Sans:400,300");
+@import url("http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700");
 body {
-    font-family: Verdana,sans-serif;
-    background-color: #fff;
-    margin: 0 auto;
-    width: 800px;
+    font: 15px/25px  'Open Sans', sans-serif;
+    margin: 0; padding: 0;
+    font-weight: 300;
 }
-
-.contentCover {
-    padding: 15px;
-
-
-}
-.menu {
-    padding: 0 10px;
-    margin: 0 0 10px 0;
-    position: relative;
-    background-color: #fff;
-}
-.menu li {
-    display: inline;
-}
-.menu li a {
+a {
     color: black;
+}
+a {
     text-decoration: none;
+    font-weight: 400;
 }
-.menu li.accounts {
-    font-size: 10px;
-    position: absolute;
-    top: 0;
-    right: 10px;
+a:hover {
+    text-decoration: underline;
 }
-.content {
-    padding: 0 10px;
-    background-color: #fff;
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
 }
-a {text-decoration: none;}
-a:hover {text-decoration: underline;}
-.blogTitle {
-    padding: 0 10px;
-    height: 70px;
-    font-size:35px;
+.container {
+    width: 100%;
 }
-.blogTitle a {
-    color: #000;
+div.entry {
+    margin-top: 15px;
 }
-/* stolen from WillMcGugan's blog*/
-.top-feed-icon {
-    background-image:url(/static/images/icons/feed.png);
-    background-position:right top;
-    background-repeat:no-repeat;
-    float:right;
-    height:64px;
-    margin:0 auto;
-    opacity:0.2;
-    width:64px;
-    z-index:2;
+h1#title {
+    margin-bottom: 20px;
 }
-.top-feed-icon:hover {
-    opacity:1;
+div#menu {
+    background-color: #FAFAFA;
+    border-right: 1px solid #CCC;
+    padding: 10px;
 }
-.top-feed-icon a {
-    display:block;
-    height:64px;
-    width:64px;
+div#menu a {
+    font-weight: 300;
 }
-pre {
-    background:#F9F9F9 none repeat scroll 0 0;
-    clear:both;
-    font-family:"Bitstream Vera Sans Mono","Courier new","Courier",monospace;
-    font-size:12px;
-    line-height:120%;
-    margin-bottom:16px;
-    margin-top:0;
-    max-height:600px;
-    overflow-x:auto;
-    padding:8px;
+div#content {
+    text-align: left;
+    padding-top: 10px;
+    margin: 10px;
 }
-/*Custom form.css*/
-input.text, input.title {width:60%;padding:5px;}
-input.title {font-size:1.5em;}
-textarea {width:90%;height:250px;padding:5px;}
-textarea.post {height:500px;}
+
+@media (min-width: 800px) {
+    div#menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 140px;
+        height: 100%;
+        min-height: 100%;
+        bottom: 0;
+        padding: 90px 0 0 0;
+    }
+
+    div#content {
+        margin: 0 0 0 160px;
+        width: 780px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        float: left;
+    }
+}
+
+
+div#menu ul {
+    margin: 0;
+}
+div#menu ul li {
+    list-style: none;
+    padding-top: 20px;
+    text-align: center;
+}
+div.posted {
+    text-align: right;
+    color: #005580;
+}
+pre, code, tt {
+    font-family: 'Ubuntu Mono', 'Consolas', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', 'Monaco', 'Courier New';
+    font-size: 0.9em;
+}
+/* .top-feed-icon { */
+/*     background-image:url(/static/images/icons/feed.png); */
+/*     background-position:right top; */
+/*     background-repeat:no-repeat; */
+/*     float:right; */
+/*     height:64px; */
+/*     margin:0 auto; */
+/*     opacity:0.2; */
+/*     width:64px; */
+/*     z-index:2; */
+/* } */
+/* .top-feed-icon:hover { */
+/*     opacity:1; */
+/* } */
+/* .top-feed-icon a { */
+/*     display:block; */
+/*     height:64px; */
+/*     width:64px; */
+/* } */
+

@@ -1,13 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
-  
+
   <form action="{{ page_path }}" method="post">
-    {{ form.title.description }}<br />
-    {{ form.title.render() }}<br />
-    
-    {{ form.body.description }}<br />
-    {{ form.body.render() }}<br />
-    {{ form.active.description }} {{ form.active.render() }}<br />
+    {{ form.title.description }}<br>
+    {{ form.title.render() }}<br>
+    {{ form.title.note }}<br>
+
+    {{ form.body.description }}<br>
+    {{ form.body.render() }}<br
+    {{ form.body.note }}<br>
+    {{ form.active.description }} {{ form.active.render() }}<br>
+    {{ form.active.note }}<br>
     {{ form.Post.render() }}
   </form>
 

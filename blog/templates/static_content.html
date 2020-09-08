@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+  {% if not add_or_edit %}
+    {{ content.content|markdown }}
+
+    {% if google_accounts.get_current_user() %}
+      <div><a href="{{ page_path }}/edit">Edit</a></div>
+    {% endif %}
+  {% else %}
+    <form action="{{ page_path }}" method="post">
+    {{ form.name.description }}<br>
+    {{ form.name.render() }}<br>
+    {{ form.position.description }}<br>
+    {{ form.position.render() }}<br>
+    {{ form.label.description }}<br>
+    {{ form.label.render() }}<br>
+    {{ form.title.description }}<br>
+    {{ form.title.render() }}<br>
+    
+    {{ form.content.description }}<br>
+    {{ form.content.render() }}<br>
+    {{ form.active.description }} {{ form.active.render() }}<br>
+    {{ form.Post.render() }}<br>
+  </form>
+
+  {% endif %}
+{% endblock %}

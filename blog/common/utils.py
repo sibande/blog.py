@@ -21,7 +21,8 @@ def markdown(content, safe="unsafe"):
     content = markdown(content, ['codehilite',], safe,)
     return content
     
-
+def datetimeformat(value, format='%d %B, %Y at %H:%M%p'):
+    return value.strftime(format)
 
 
 
@@ -31,7 +32,10 @@ def render_template(template_name, **context):
     import datetime
     from jinja2 import Environment,FileSystemLoader
 
-    template_tags = {'markdown': markdown}
+    template_tags = {
+        'markdown': markdown,
+        'datetimeformat': datetimeformat,
+    }
 
     extensions = context.pop('extensions', [])
     globals = context.pop('globals', {})

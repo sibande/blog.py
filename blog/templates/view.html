@@ -1,14 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
-
-  <h2><a href="/post/{{ post.slug }}-{{ post.key().id() }}">{{ post.title }}</a></h2>
-  <div class="body">
-    {{ post.body|markdown }}
+  <div class="container entry">
+    <h2><a href="/post/{{ post.slug }}-{{ post.key().id() }}">{{ post.title }}</a></h2>
+    <div class="body">
+      {{ post.body|markdown }}
+    </div>
+    {% if google_accounts.is_current_user_admin() %}
+      <div style="float:right;"><a href="/post/{{ post.slug }}-{{ post.key().id() }}/edit">Edit</a></div>
+    {% endif %}
+    <div class="posted">
+      {{ post.datetime|datetimeformat }}<br>
+    </div>
   </div>
-  {% if google_accounts.is_current_user_admin() %}
-    <div style="float:right;"><a href="/post/{{ post.slug }}-{{ post.key().id() }}/edit">Edit</a></div>
-  {% endif %}
-  {{ post.datetime }}
-  <hr />
 
 {% endblock %}

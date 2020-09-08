@@ -1,20 +1,27 @@
-<!DOCTYPE html
-PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>{% block title %}Sibande{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/blueprint/screen.css" type="text/css" media="screen, projection" />
-    <link rel="stylesheet" href="/static/css/blueprint/print.css" type="text/css" media="print" />
-    <!--[if lt IE 8]>
-	<link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection" />
-    <![endif]-->
-    <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
-    <link rel="stylesheet" href="/static/css/highlight.css" type="text/css" />
+    <meta charset="utf-8">
+    <title>{% block title %}Sibande_{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/highlight.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31452593-1']);
+      _gaq.push(['_setDomainName', 'sibande.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
   </head>
   <body>
+
     {% macro with_errors(field) %}
       <div class="form_field">
 	{% if field.errors %}
@@ -27,30 +34,29 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
       </div>
     {% endmacro %}
 
-    <div class="contentCover">
-      <div class="blogTitle">
-	<div class="top-feed-icon">
-	  <a href="/blog/feeds"> </a>
-	</div>
-	<a href="/">Sibande_</a>
-      </div>
-      <ul class="menu">
-	<li><a href="/">Home</a></li>
-	{% for page in static_pages %}
+    <div id="menu">
+      <ul>
+        <li><a href="/">Home</a></li>
+        {% for page in static_pages %}
 	  <li><a href="/{{ page.name }}">{{ page.label }}</a></li>
 	{% endfor %}
-	<li class="accounts">
-	  {% if google_accounts.get_current_user() %}
-	    <a href="{{ google_accounts.create_logout_url('/') }}">Logout</a> ({{ google_accounts.get_current_user().nickname() }})
-	  {% else %}
-	    <a href="{{ google_accounts.create_login_url('/') }}">Login</a>
-	  {% endif %}
-	</li>
       </ul>
-      <div class="content">
-	{% block content %}{% endblock %}
-      </div>
     </div>
 
+    <div id="content">
+      <h1 id="title"><a class="large loud" href="/">Sibande_</a></h2>
+      {% block content %}{% endblock %}
+
+      <hr>
+      &copy; Copyright 2012 by <a href="mailto:me@sibande.com">Jose Sibande</a>.
+
+      <div class="hide">
+        {% if google_accounts.get_current_user() %}
+	  <a href="{{ google_accounts.create_logout_url('/') }}">Logout</a> ({{ google_accounts.get_current_user().nickname() }})
+        {% else %}
+	  <a href="{{ google_accounts.create_login_url('/') }}">Login</a>
+        {% endif %}
+      </div>
+    </div>
   </body>
 </html>

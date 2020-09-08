@@ -57,7 +57,7 @@ class add_edit:
         self.init_data(post_id, 'update') #switch to "update" and lose "edit" state
         form = self.form_class()
         if form.validates():
-            active = True if form.get('active').value else False
+            active = True # if form.get('active').value else False
             title = form.get('title').value
             body = form.get('body').value
             if action == 'edit':
@@ -107,19 +107,19 @@ class feed:
                     description = post.body.split('\n')[0],
                     guid = RSS2.Guid(link),
                     pubDate = post.datetime))
-            
+
             rss = RSS2.RSS2(
                 title = "Sibande's feed",
                 link = SITE_URL,
                 description = "Random thoughs by Sibande_",
                 lastBuildDate = datetime.datetime.now(),
-                
+
                 items = items)
 
         return rss.to_xml();
     def POST(self):
         return web.seeother('/', absolute=True)
-        
+
 
 class static_content:
 
@@ -154,7 +154,7 @@ class static_content:
         self.init_data(name, action)
         form = self.form_class()
         if form.validates():
-            active = True if form.get('active').value else False
+            active = True # if form.get('active').value else False 
             if not self.content:
                 static_data = Static(position=int(form.get('position').value),
                                      name=form.get('name').value.lstrip('/'),
@@ -177,7 +177,7 @@ class static_content:
 
 def notfound():
     return web.notfound(render_template('404.html', **context))
-    
+
 def internalerror():
     return web.internalerror(render_template('500.html', **context))
 
@@ -189,11 +189,14 @@ mapper = ('/', 'index',
           '/blog/feeds', 'feed',
           '/(\w+)/(edit)', 'static_content',
           '/(\w+)', 'static_content',)
-    
+
 def default_loadhook():
     web.google_accounts = users
     context['google_accounts'] = users
-    
+
+    if not web.ctx.host.startswith('www.sibande.com'):
+        raise web.seeother('http://www.sibande.com' + web.ctx.fullpath)
+
     context['static_pages'] = Static.all().filter('position <', 15)\
         .filter('active =', True).order('position')
 
@@ -204,4 +207,4 @@ app.add_processor(web.loadhook(default_loadhook))
 
 if __name__ == "__main__":
     main = app.cgirun()
-    
+
